@@ -38,24 +38,7 @@ async function fetchData() {
     // Store the JSON data in the global variable
     data = jsonData;
     console.log(data);
-    for (let index = 0; index < data.length; index++) {
-    data[index].last_activity = timeSinceLastActive(data[index].last_activity)
-     if (data[index].safe_mode === "1") {
-        data[index].safe_mode = "Y";
-      } else {
-        data[index].safe_mode = "N";
-      }
-    if (data[index].banned === "1") {
-        data[index].banned = "Y";
-      } else {
-        data[index].banned = "N";
-      }
-        if (data[index].warrior === "1") {
-        data[index].warrior = "Y";
-      } else {
-        data[index].warrior = "N";
-      }
-}
+   
 
     return data; // You can log the data or perform further actions here
   } catch (error) {
@@ -183,26 +166,6 @@ const init = () => {
 
 (async () => {
     await fetchData();
-    // After fetching data, run the other functions
-/* let activerows = document.querySelectorAll("#squadTable > tbody > tr");
-    for (let index = 0; index < activerows.length; index++) {
-      activerows[index].childNodes[13].innerText = timeSinceLastActive(activerows[index].childNodes[13].innerText);
-      if (document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[11].innerText === "1") {
-        document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[11].innerText = "Y";
-      } else {
-        document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[11].innerText = "N";
-      }
-      if (document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[9].innerText === "1") {
-        document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[9].innerText = "Y";
-      } else {
-        document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[9].innerText = "N";
-      }
-      if (document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[19].innerText === "1") {
-        document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[19].innerText = "Y";
-      } else {
-        document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[19].innerText = "N";
-      }
-    } */
     init();
     handleSortClick();
     
