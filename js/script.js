@@ -38,6 +38,25 @@ async function fetchData() {
     // Store the JSON data in the global variable
     data = jsonData;
     console.log(data);
+    for (let index = 0; index < data.length; index++) {
+    data[index].last_activity = timeSinceLastActive(data[index].last_activity)
+     if (data[index].safe_mode === "1") {
+        data[index].safe_mode = "Y";
+      } else {
+        data[index].safe_mode = "N";
+      }
+    if (data[index].banned === "1") {
+        data[index].banned = "Y";
+      } else {
+        data[index].banned = "N";
+      }
+        if (data[index].warrior === "1") {
+        data[index].warrior = "Y";
+      } else {
+        data[index].warrior = "N";
+      }
+}
+
     return data; // You can log the data or perform further actions here
   } catch (error) {
     console.error('Error:', error);
@@ -85,13 +104,20 @@ const toggleOrder = () => {
 
 const sortTable = (array, sortKey) => {
   return array.sort((a, b) => {
-    let x = a[sortKey],
-      y = b[sortKey];
+    const x = a[sortKey];
+    const y = b[sortKey];
 
-    return orderAsc ? x - y : y - x;
+    // Check if the values are "N" or "Y" and convert them to 0 and 1 respectively for sorting
+    const valueX = x === 'N' ? 0 : x === 'Y' ? 1 : x;
+    const valueY = y === 'N' ? 0 : y === 'Y' ? 1 : y;
+
+    if (valueX === valueY) {
+      return 0;
+    }
+
+    return orderAsc ? (valueX < valueY ? -1 : 1) : valueX > valueY ? -1 : 1;
   });
 };
-
 
 const renderTable = tableData => {
   return `${tableData.map(item => {
@@ -126,20 +152,26 @@ const handleSortClick = () => {
   const filters = document.querySelectorAll('#squadTable th');
 
   Array.prototype.forEach.call(filters, filter => {
-    filter.addEventListener("click", () => {
+    filter.addEventListener('click', () => {
       if (!filter.dataset.filterValue) return false;
 
-      Array.prototype.forEach.call(filters, filter => {
-        filter.classList.remove('active');
+      // If the clicked column is already active, toggle the order
+      if (currentFilter === filter.dataset.filterValue) {
+        toggleOrder();
+      } else {
+        // If a different column is clicked, reset order to ascending
+        orderAsc = true;
+      }
+
+      Array.prototype.forEach.call(filters, f => {
+        f.classList.remove('active');
       });
       filter.classList.add('active');
       currentFilter = filter.dataset.filterValue;
-      toggleOrder();
       init();
     });
   });
 };
-
 const init = () => {
   let newTableData = sortTable(data, currentFilter),
     tableOutput = renderTable(newTableData);
@@ -152,10 +184,7 @@ const init = () => {
 (async () => {
     await fetchData();
     // After fetching data, run the other functions
-
-    init();
-    handleSortClick();
-    let activerows = document.querySelectorAll("#squadTable > tbody > tr");
+/* let activerows = document.querySelectorAll("#squadTable > tbody > tr");
     for (let index = 0; index < activerows.length; index++) {
       activerows[index].childNodes[13].innerText = timeSinceLastActive(activerows[index].childNodes[13].innerText);
       if (document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[11].innerText === "1") {
@@ -173,7 +202,10 @@ const init = () => {
       } else {
         document.querySelectorAll("#squadTable > tbody > tr")[index].childNodes[19].innerText = "N";
       }
-    }
+    } */
+    init();
+    handleSortClick();
+    
   })();
 }
 
