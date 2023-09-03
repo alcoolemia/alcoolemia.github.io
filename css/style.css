@@ -1,0 +1,6 @@
+th[data-filter-value] {
+  cursor: pointer;
+}
+th.active {
+  color: red;
+}
